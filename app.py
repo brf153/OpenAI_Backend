@@ -9,8 +9,11 @@ from openai import OpenAI
 app = Flask(__name__)
 CORS(app)
 
-# OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-OPENAI_API_KEY = "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"
+# Retrieve environment variable
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
+# Use the environment variable
+print(f"OpenAI API Key: {OPENAI_API_KEY}")
 
 clientAI = OpenAI(api_key=OPENAI_API_KEY)
 
