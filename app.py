@@ -56,7 +56,7 @@ def store_product():
         #                 )
 
         # generated_text = response.choices[0].message.content
-        print("Received a request to store the content in a temporary file.", generated_text)
+        print("Received a request to store the content in a temporary file.", product_data)
         with open('data.txt', 'w', encoding='utf-8') as file:
             file.write(product_data)
 
