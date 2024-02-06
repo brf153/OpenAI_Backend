@@ -43,19 +43,9 @@ def store_product():
         if not product_data:
             abort(400, description="Missing 'product' key in the JSON payload")
 
-        # full_prompt = f"write a summary of the following information:\n\n{product_data}"
-
-        # response = clientAI.chat.completions.create(
-        #                     messages=[
-        #                         {
-        #                             "role": "user",
-        #                             "content": full_prompt,
-        #                         }
-        #                     ],
-        #                     model="gpt-3.5-turbo",
-        #                 )
-
-        # generated_text = response.choices[0].message.content
+        if os.path.exists('data.txt'):
+            os.remove('data.txt')
+            
         print("Received a request to store the content in a temporary file.", product_data)
         with open('data.txt', 'w', encoding='utf-8') as file:
             file.write(product_data)
