@@ -6,7 +6,7 @@ from langchain.indexes import VectorstoreIndexCreator
 from langchain_openai import ChatOpenAI
 from openai import OpenAI
 
-import constants
+# import constants
 
 app = Flask(__name__)
 CORS(app)
