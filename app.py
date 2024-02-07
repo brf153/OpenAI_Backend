@@ -19,6 +19,11 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
 
+clientAI = OpenAI(
+    # api_key=os.environ.get("OPENAI_API_KEY"),
+    api_key = OPENAI_API_KEY,
+)
+
 # Use the environment variable
 print(f"OpenAI API Key: {OPENAI_API_KEY}")
 
@@ -71,14 +76,24 @@ def add_item():
         if 'message' not in request.json:
             return jsonify({"error": "Missing 'message' key in the JSON payload"}), 400
 
-        item = request.json['message']
-        product_id = request.json.get('id')
+        question = request.json['message']
+        product = request.json.get('product')
+        
+        full_prompt = f"The product details are as follows:\n\n{product}\n\nNow answer the question: {question}"
 
-        loader = TextLoader(f'{product_id}.txt')
-        index = VectorstoreIndexCreator().from_loaders([loader])
+        response = clientAI.chat.completions.create(
+                                messages=[
+                                    {
+                                        "role": "user",
+                                        "content": full_prompt,
+                                    }
+                                ],
+                                model="gpt-3.5-turbo",
+                            )
 
-        return jsonify({"message": index.query(item, llm=ChatOpenAI(openai_api_key = OPENAI_API_KEY))})
+        generated_text = response.choices[0].message.content
 
+        return jsonify({"message": generated_text})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
