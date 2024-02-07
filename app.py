@@ -38,16 +38,18 @@ def hello_world():
 def store_product():
     try:
         product_data = request.json.get('product')
-        
+        product_id = request.json.get('id')
 
         if not product_data:
             abort(400, description="Missing 'product' key in the JSON payload")
 
-        if os.path.exists('data.txt'):
-            os.remove('data.txt')
-            
+
+        if os.path.exists(f'{product_id}.txt'):
+            return jsonify({"message": "Product already exists!"}), 200
+
         print("Received a request to store the content in a temporary file.", product_data)
-        with open('data.txt', 'w', encoding='utf-8') as file:
+
+        with open(f'{product_id}.txt', 'w', encoding='utf-8') as file:
             file.write(product_data)
 
         return jsonify({"message": "Received the product data successfully"})
@@ -65,8 +67,9 @@ def add_item():
             return jsonify({"error": "Missing 'message' key in the JSON payload"}), 400
 
         item = request.json['message']
+        product_id = request.json.get('id')
 
-        loader = TextLoader('data.txt')
+        loader = TextLoader(f'{product_id}.txt')
         index = VectorstoreIndexCreator().from_loaders([loader])
 
         return jsonify({"message": index.query(item, llm=ChatOpenAI())})

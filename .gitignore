@@ -2,3 +2,4 @@ dependencies
 server.zip
 venv
 __pycache__
+.env
