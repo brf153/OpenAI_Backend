@@ -6,16 +6,21 @@ from langchain.indexes import VectorstoreIndexCreator
 from langchain_openai import ChatOpenAI
 from openai import OpenAI
 
+import constants
+
 app = Flask(__name__)
 CORS(app)
 
 # Retrieve environment variable
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
+# Dev Mode
+# OPENAI_API_KEY = constants.OPENAI_API_KEY
+
+os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+
 # Use the environment variable
 print(f"OpenAI API Key: {OPENAI_API_KEY}")
-
-clientAI = OpenAI(api_key=OPENAI_API_KEY)
 
 # Decorator to check if the authentication token is provided in the header
 def authenticate(func):
@@ -72,7 +77,7 @@ def add_item():
         loader = TextLoader(f'{product_id}.txt')
         index = VectorstoreIndexCreator().from_loaders([loader])
 
-        return jsonify({"message": index.query(item, llm=ChatOpenAI())})
+        return jsonify({"message": index.query(item, llm=ChatOpenAI(openai_api_key = OPENAI_API_KEY))})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
